@@ -1,0 +1,24 @@
+Default: &defaults
+  user: Exodus
+  password: Exodus
+  host: localhost
+  port: 27017
+  database: Exodus
+  poolsize: 10
+
+Development:
+  <<: *defaults
+
+Test:
+  database: Exodus_test
+  <<: *defaults
+
+Staging:
+  database: Exodus_staging
+  poolsize: 100
+  <<: *defaults
+
+Production:
+  database: Exodus_production
+  poolsize: 100
+  <<: *defaults

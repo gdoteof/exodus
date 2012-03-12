@@ -1,0 +1,2 @@
+<h1> #{playerName player}
+<h3> #{playerNick player}
