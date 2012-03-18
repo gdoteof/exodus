@@ -1,0 +1,4 @@
+<form method=post enctype=#{enctype}>
+    ^{tableWidget}
+    <div>
+        <input type=submit value="Create New Table">

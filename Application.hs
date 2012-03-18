@@ -24,6 +24,8 @@ import Network.HTTP.Conduit (newManager, def)
 -- Import all relevant handler modules here.
 import Handler.Root
 import Handler.Player
+import Handler.Table
+import Handler.GamingSession
 
 
 -- This line actually creates our YesodSite instance. It is the second half

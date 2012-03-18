@@ -1,0 +1,2 @@
+mongod &
+yesod --dev devel  &

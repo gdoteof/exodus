@@ -19,6 +19,7 @@ playerForm = renderDivs $ Player
     <*> aopt   textField "Email" Nothing
     <*> aopt   textField "Phone" Nothing
     <*> aopt   textareaField "Notes" Nothing
+    <*> aopt   intField "Minutes to Start" Nothing
 
 getPlayerListR :: Handler RepHtml
 getPlayerListR = do

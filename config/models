@@ -14,6 +14,23 @@ Player
     email Text Maybe
     phone Text Maybe
     note Textarea Maybe
+    minutes Int Maybe
+    deriving
+
+Table
+    name Text
+    game Text 
+    pointsHour Int
+    seats Int Maybe
+    description Text Maybe
+    deriving
+
+GamingSession
+    start UTCTime
+    end UTCTime Maybe
+    player PlayerId
+    table TableId
+    seat Int Maybe
     deriving
 
  -- By default this file is used in Model.hs (which is imported by Foundation.hs)

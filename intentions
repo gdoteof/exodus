@@ -1,0 +1,73 @@
+I have /player; which lists a bunch of players.
+
+The idea of this app is to track player time in the form of sessions.
+
+
+Player
+    name Text
+    nick Text
+    email Text Maybe
+    phone Text Maybe
+    note Textarea Maybe
+    minutes Int Maybe
+    deriving
+
+Table
+    name Text
+    game Text 
+    pointsHour Int
+    seats Int Maybe
+    description Text Maybe
+    deriving
+
+GamingSession
+    start UTCTime
+    end UTCTime Maybe
+    player PlayerId
+    table TableId
+    seat Int Maybe
+  
+
+/session GamingSessionR POST GET
+
+GET Will show current open sessions
+POST Will start a new session and and expects { PlayerId, TableId , Maybe Int } to be posted. UTCTime for start will come from Data.Time.Clock
+
+
+It seems I want to do input only. 
+
+
+I don't now what to put for the fieldtype for the necessary PlayerId and TableId
+
+do
+    gamingSession <- runInputGet $ GamingSession
+                     <$> ireq textField "player"
+                     <*> ireq textField "tableId"
+    defaultLayout [whamlet|<p>#{show gamingSession}|]
+
+
+I also dont know if I can add my own values 'inline' to create a Gaming session (ie something like)
+
+do
+    gamingSession <- runInputGet $ GamingSession
+                     do { start <- getCurrentTime }
+                     Nothing
+                     <$> ireq textField "player"
+                     <*> ireq textField "tableId"
+                     <*> iopt intField "seatNumber"
+    defaultLayout [whamlet|<p>#{show gamingSession}|]
+
+
+or do i need to create a helper type, something like
+
+data Helper = Helper
+  player :: PlayerId
+  table :: TableId
+  seat :: Int Maybe
+
+do
+  gamingSessionHelper <- runInputGet $ Helper
+          ..
+       do {start <- getCurrentTime }
+       let gamingSession = GamingSession start Nothing (gamingSessionHelper player) (gamingSessionHelper table) (gamingSessionHelper seat)
+       in ...

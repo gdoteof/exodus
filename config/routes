@@ -7,5 +7,9 @@
 / RootR GET
 
 /player PlayerListR GET POST
-
 /player/#PlayerId PlayerR GET
+
+/table TablesR GET POST
+/table/#TableId TableR GET
+
+/session GamingSessionR GET POST
