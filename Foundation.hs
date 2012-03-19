@@ -37,6 +37,7 @@ import Web.ClientSession (getKey)
 import Text.Hamlet (hamletFile)
 import Data.Text
 import Data.Int
+import Data.Time.Clock (getCurrentTime)
 import Yesod.Form.Nic (YesodNic, nicHtmlField)
 
 #if DEVELOPMENT

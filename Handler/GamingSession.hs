@@ -9,22 +9,23 @@ import Data.Time.Clock
 import Database.Persist.Store
 import Data.Text
 import Data.Maybe
+import Safe (readMay)
 
 postGamingSessionR :: Handler RepHtml
 postGamingSessionR = do
     start <- liftIO $ getCurrentTime
-    gs <- runInputPost $ GamingSession
-                start
-                Nothing
-                <$> (textToKey <$> (ireq textField "player"))
-                <*> (textToKey <$> (ireq textField "table"))
+    (player, table, seat) <- runInputPost $ (,,)
+                <$> (ireq textField "player")
+                <*> (ireq textField "table")
                 <*> iopt intField "seat"
-    let _ = gs :: GamingSession
+    playerId <- maybe (invalidArgs ["couldn't parse: ", player]) return $ readMay $ unpack player
+    tableId <- maybe (invalidArgs ["couldn't parse: ", table]) return $ readMay $ unpack table
+    let gs = GamingSession start Nothing playerId tableId seat 
     gsId <- runDB $ insert gs
     defaultLayout $(widgetFile "newSession.hamlet")
   
-textToKey = Key . PersistInt64 . read . unpack
---textToKey = maybe (fail "bad input") return .  fromPathPiece
+--textToKey = Key . PersistText . read . unpack
+--textToKey = fromJust .  fromPathPiece
 
 
 getGamingSessionR :: Handler RepHtml
