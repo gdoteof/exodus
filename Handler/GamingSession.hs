@@ -1,3 +1,4 @@
+{-# LANGUAGE NoMonomorphismRestriction #-}
 module Handler.GamingSession
     ( postGamingSessionR
     , getGamingSessionR
@@ -9,24 +10,22 @@ import Data.Time.Clock
 import Database.Persist.Store
 import Data.Text
 import Data.Maybe
-import Safe (readMay)
 
 postGamingSessionR :: Handler RepHtml
 postGamingSessionR = do
     start <- liftIO $ getCurrentTime
-    (player, table, seat) <- runInputPost $ (,,)
-                <$> (ireq textField "player")
-                <*> (ireq textField "table")
+    gs <- runInputPost $ GamingSession
+                start
+                Nothing
+                <$> (textToKey <$> (ireq textField "player"))
+                <*> (textToKey <$> (ireq textField "table"))
                 <*> iopt intField "seat"
-    playerId <- maybe (invalidArgs ["couldn't parse: ", player]) return $ readMay $ unpack player
-    tableId <- maybe (invalidArgs ["couldn't parse: ", table]) return $ readMay $ unpack table
-    let gs = GamingSession start Nothing playerId tableId seat 
+    let _ = gs :: GamingSession
     gsId <- runDB $ insert gs
-    defaultLayout $(widgetFile "newSession.hamlet")
+    defaultLayout $(widgetFile "newSession")
   
 --textToKey = Key . PersistText . read . unpack
---textToKey = fromJust .  fromPathPiece
-
+textToKey a = fromJust . fromPathPiece $ a
 
 getGamingSessionR :: Handler RepHtml
 getGamingSessionR = do
