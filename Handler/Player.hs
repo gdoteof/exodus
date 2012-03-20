@@ -11,6 +11,8 @@ import Import
 -- to use Html into forms
 import Yesod.Form.Nic (YesodNic, nicHtmlField)
 import Data.Maybe
+import Handler.Table
+import Helpers.Model
 
 playerForm :: Form Player
 playerForm = renderDivs $ Player
@@ -20,6 +22,7 @@ playerForm = renderDivs $ Player
     <*> aopt   textField "Phone" Nothing
     <*> aopt   textareaField "Notes" Nothing
     <*> aopt   intField "Minutes to Start" Nothing
+    <*> pure   False
 
 getPlayerListR :: Handler RepHtml
 getPlayerListR = do
@@ -50,6 +53,10 @@ postPlayerListR = do
 getPlayerR :: PlayerId -> Handler RepHtml
 getPlayerR playerId = do
      player <- runDB (get404 playerId)
+     tables <- runDB $ selectList [] [Desc TableName]
+     let minutes = if playerMinutes player == Nothing
+                   then 0
+                   else fromJust $ playerMinutes player
      defaultLayout $ do 
                    setTitle "Testing" 
                    $(widgetFile "player")
