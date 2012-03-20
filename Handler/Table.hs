@@ -7,6 +7,7 @@ where
 
 
 import Import
+import Helpers.Model
 
 tableForm :: Form Table
 tableForm = renderDivs $ Table
@@ -49,3 +50,15 @@ getTableR tableId = do
      defaultLayout $ do 
                    setTitle ( "Tables")
                    $(widgetFile "table")
+
+
+tableCheckinWidget :: Player -> Widget
+tableCheckinWidget player = do
+     records <- runDB $  do
+                sessions <-  selectList [GamingSessionEnd ==. Nothing] []
+                tables   <-  selectList [] []
+
+                return $ joinTables gamingSessionTable sessions tables 
+     addScriptRemote "http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"
+     toWidget [hamlet|something|]
+     -- $(widgetFile "tableCheckinWidget")
