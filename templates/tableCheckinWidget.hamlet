@@ -1,0 +1,7 @@
+<div> there is a checkin widget
+$if null tables
+  <div .empty-seats>No empty seats
+$else
+  <ul>
+  $forall (i, t) <- tables
+      <li .table>#{tableName t}

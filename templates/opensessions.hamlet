@@ -1,0 +1,32 @@
+<form action=@{GamingSessionsR} method=post>
+    <p>
+        player
+        <input type=text name=player value=4f6150251c21230c78000000>
+        table
+        <input type=text name=table value=4f651bfa1c21231873000000>
+        table
+        <input type=text name=seat value=2>
+        <input type=submit value="make">
+<div .content>
+  <div .page-header>
+    <h1>All reviews
+
+  $if null records
+    <div .no-results>
+      <h3>Oops!
+      <p>
+        We don't seem to have any reviews in the system. Something must 
+        be broken.
+
+      <p>Please check back later.
+
+  $else
+    <table .bordered-table .condensed-table .zebra-striped>
+      <thead>
+        <tr>
+          <th>Playher name
+          <th>Table name
+      <tbody .link>
+
+        $forall (s,p,t) <- records
+          ^{gamingSessionWidget (entityKey s) (entityVal p) (entityVal t)}

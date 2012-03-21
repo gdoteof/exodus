@@ -1,3 +1,7 @@
 <h1> HI everyone
 
-#{show gsId}
+<div> Session started at 
+  <span id=startTime>#{show startTime}
+<div> On #{show (tableName table)}
+<div> For Player: #{show (playerName player)}
+<div> On Seat: #{show $ fromJust (gamingSessionSeat gs)}

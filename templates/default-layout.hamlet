@@ -1,3 +1,9 @@
+<div .header>
+    <ul>
+        <li><a href=@{PlayerListR}>Players
+        <li><a href=@{TablesR}>Tables
+        <li><a href=@{GamingSessionsR}>Open Sessions</a>
+
 $maybe msg <- mmsg
     <div #message>#{msg}
 ^{widget}
