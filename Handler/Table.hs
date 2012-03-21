@@ -55,7 +55,8 @@ getTableR tableId = do
 
 tableCheckinWidget :: [Entity Table] -> Widget
 tableCheckinWidget tableList = do
-     let tables = map (addIdent .entityVal) tableList
+     let tables = map (entityVal) tableList
+     let tableTuple = map addIdent tables
      addScriptRemote "http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"
      $(widgetFile "tableCheckinWidget")
 
