@@ -2,6 +2,7 @@ module Handler.Table
     ( getTablesR
     , postTablesR
     , getTableR
+    , tableCheckinWidget
     )
 where
 
@@ -52,13 +53,13 @@ getTableR tableId = do
                    $(widgetFile "table")
 
 
-tableCheckinWidget :: Player -> Widget
-tableCheckinWidget player = do
-     records <- runDB $  do
-                sessions <-  selectList [GamingSessionEnd ==. Nothing] []
-                tables   <-  selectList [] []
-
-                return $ joinTables gamingSessionTable sessions tables 
+tableCheckinWidget :: [Entity Table] -> Widget
+tableCheckinWidget tableList = do
+     let tables = map (addIdent .entityVal) tableList
      addScriptRemote "http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"
-     toWidget [hamlet|something|]
-     -- $(widgetFile "tableCheckinWidget")
+     $(widgetFile "tableCheckinWidget")
+
+
+addIdent a = do
+  identity <- lift newIdent
+  return (identity, a)
