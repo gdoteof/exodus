@@ -11,6 +11,7 @@ import Import
 import Helpers.Model
 import Data.Text.Lazy.Builder (Builder, fromText, toLazyText, fromLazyText)
 import qualified Data.Text.Lazy as TL
+import Text.Julius
 
 tableForm :: Form Table
 tableForm = renderDivs $ Table
@@ -75,4 +76,4 @@ addIdent a = do
   return (identity, a)
 
 
-toJavascript = toJavascript . tableName
+instance ToJavascript Table where toJavascript = toJavascript .  tableName 
