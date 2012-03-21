@@ -2,6 +2,6 @@
 $if null tables
   <div .empty-seats>No empty seats
 $else
-  <ul>
-  $forall (i, t) <- tables
-      <li .table>#{tableName t}
+  <ul .checkin-widget>
+  $forall (i, t) <- tableTuple
+      <li ##{i} .table>#{tableName t} 

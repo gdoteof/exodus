@@ -64,7 +64,7 @@ tableCheckinWidget tableList = do
      toWidget [julius|
      $(function() {
          $("#h2").click(function(){ alert("You clicked on the heading!"); });
-         console.log(#{tableTuple})
+         console.log(#{head tables})
          });
          |]
      $(widgetFile "tableCheckinWidget")
@@ -75,6 +75,4 @@ addIdent a = do
   return (identity, a)
 
 
-class ToJavascript a where
-    toJavascript :: a -> Builder
-instance ToJavascript Table where toJavascript = tableName 
+toJavascript = toJavascript . tableName
