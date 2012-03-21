@@ -9,6 +9,8 @@ where
 
 import Import
 import Helpers.Model
+import Data.Text.Lazy.Builder (Builder, fromText, toLazyText, fromLazyText)
+import qualified Data.Text.Lazy as TL
 
 tableForm :: Form Table
 tableForm = renderDivs $ Table
@@ -56,11 +58,23 @@ getTableR tableId = do
 tableCheckinWidget :: [Entity Table] -> Widget
 tableCheckinWidget tableList = do
      let tables = map (entityVal) tableList
-     let tableTuple = map addIdent tables
+     let zz = 2
+     tableTuple <- mapM addIdent tables
      addScriptRemote "http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"
+     toWidget [julius|
+     $(function() {
+         $("#h2").click(function(){ alert("You clicked on the heading!"); });
+         console.log(#{tableTuple})
+         });
+         |]
      $(widgetFile "tableCheckinWidget")
 
 
 addIdent a = do
   identity <- lift newIdent
   return (identity, a)
+
+
+class ToJavascript a where
+    toJavascript :: a -> Builder
+instance ToJavascript Table where toJavascript = tableName 
