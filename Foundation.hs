@@ -173,3 +173,7 @@ instance RenderMessage PokerRoom FormMessage where
     renderMessage _ _ = defaultFormMessage
 
 instance YesodNic PokerRoom
+
+
+headerWidget :: Widget
+headerWidget = [whamlet|<h1>this is the header</h1>|] -- $(widgetFile "layout/header") 

@@ -15,7 +15,8 @@ Player
     phone Text Maybe
     note Textarea Maybe
     minutes Int Maybe
-    deriving
+    inSession Bool
+    deriving Show
 
 Table
     name Text
@@ -23,7 +24,7 @@ Table
     pointsHour Int
     seats Int Maybe
     description Text Maybe
-    deriving
+    deriving Show
 
 GamingSession
     start UTCTime
@@ -31,7 +32,7 @@ GamingSession
     player PlayerId
     table TableId
     seat Int Maybe
-    deriving
+    deriving Show
 
  -- By default this file is used in Model.hs (which is imported by Foundation.hs)
 

@@ -1,4 +1,4 @@
-^{tableCheckinWidget tables}
+^{tableCheckinWidget (playerId player))}
 <h1> #{playerName player}
 <h3> #{playerNick player}
 <h3> MInutes: #{minutes}

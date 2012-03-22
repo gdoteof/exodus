@@ -12,4 +12,6 @@
 /table TablesR GET POST
 /table/#TableId TableR GET
 
-/session GamingSessionR GET POST
+/session GamingSessionsR GET POST
+/session/#GamingSessionId GamingSessionR GET POST
+/session/#GamingSessionId/close GamingSessionCloseR POST

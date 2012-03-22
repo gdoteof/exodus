@@ -26,11 +26,7 @@ playerForm = renderDivs $ Player
 
 getPlayerListR :: Handler RepHtml
 getPlayerListR = do
-    defaultLayout $ do
-        [whamlet|<h1>iget|]
     players <- runDB $ selectList [] [Desc PlayerName]
-    -- We'll need the two "objects": articleWidget and enctype
-    -- to construct the form (see templates/articles.hamlet).
     ((_,playerWidget), enctype) <- generateFormPost playerForm
     defaultLayout $ do
         setTitle "Player List"
@@ -53,7 +49,6 @@ postPlayerListR = do
 getPlayerR :: PlayerId -> Handler RepHtml
 getPlayerR playerId = do
      player <- runDB (get404 playerId)
-     tables <- runDB $ selectList [] [Desc TableName]
      let minutes = if playerMinutes player == Nothing
                    then 0
                    else fromJust $ playerMinutes player

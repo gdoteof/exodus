@@ -57,27 +57,32 @@ getTableR tableId = do
                    $(widgetFile "table")
 
 
-tableCheckinWidget :: [Entity Table] -> Widget
-tableCheckinWidget tableList = do
-     let tables = map (entityVal) tableList
-     let zz = 2
+tableCheckinWidget :: [Entity Table] -> PlayerId -> Widget
+tableCheckinWidget tableList playerId= do
+     tables <- lift $ runDB $ selectList [] []
      tableTuple <- mapM addIdent tables
      addScriptRemote "http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"
-     toWidget [julius|
-     $(function() {
-         $("#h2").click(function(){ alert("You clicked on the heading!"); });
-         console.log(#{tableTuple})
-         });
-         |]
      $(widgetFile "tableCheckinWidget")
 
+addIdent :: Entity Table -> (Text, TableId, Table)
+addIdent (Entity tableId table) = do
+  identity <- lift $ newIdent
+  return (identity, tableId, table)
 
-addIdent a = do
-  identity <- lift newIdent
-  return (identity, a)
+tableClickHandlerWidget :: String-> TableId-> PlayerId -> Maybe Int ->  Widget
+tableClickHandlerWidget elemId tableId playerId seatId = do
+  toWidget[julius|
+      $(function() {
+        $('#{id}').click.post(
+          '@{GamingSessionR}', 
+          { player: #{playerId}, table: #{tableId}, seat:#{seatId} },
+          );
+      });
+      |]
+
 
 
 instance ToJavascript Table 
-  where toJavascript table = toJavascript .  tableName $  toJSObject(
+  where toJavascript table = toJavascript .  tableName table
 
 

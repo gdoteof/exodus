@@ -3,5 +3,6 @@ $if null tables
   <div .empty-seats>No empty seats
 $else
   <ul .checkin-widget>
-  $forall (i, t) <- tableTuple
-      <li ##{i} .table>#{tableName t} 
+  $forall (id, tableId, table) <- tableTuple
+      <li ##{id} .table>{tableName (entityVal table)} 
+      ^{tableClickHandlerWidget (tableId table) playerId Nothing}
