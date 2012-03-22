@@ -1,4 +1,4 @@
-{-# LANGUAGE TypeSynonymInstances #-}
+{-# LANGUAGE TypeSynonymInstances, OverloadedStrings #-}
 module Handler.Table
     ( getTablesR
     , postTablesR
@@ -13,6 +13,7 @@ import Helpers.Model
 import Data.Text.Lazy.Builder (Builder, fromText, toLazyText, fromLazyText)
 import qualified Data.Text.Lazy as TL
 import Text.Julius
+import qualified Data.Text as T hiding (null)
 
 tableForm :: Form Table
 tableForm = renderDivs $ Table
@@ -60,16 +61,16 @@ getTableR tableId = do
 tableCheckinWidget :: [Entity Table] -> PlayerId -> Widget
 tableCheckinWidget tableList playerId= do
      tables <- lift $ runDB $ selectList [] []
-     tableTuple <- mapM addIdent tables
+     tableTuple <- lift $ mapM addIdent tables
      addScriptRemote "http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"
      $(widgetFile "tableCheckinWidget")
 
-addIdent :: Entity Table -> (Text, TableId, Table)
+addIdent :: Entity Table -> Handler (Text, TableId, Table)
 addIdent (Entity tableId table) = do
   identity <- lift $ newIdent
-  return (identity, tableId, table)
+  return (T.pack identity, (entityKey table), (entityVal table))
 
-tableClickHandlerWidget :: String-> TableId-> PlayerId -> Maybe Int ->  Widget
+tableClickHandlerWidget :: String -> TableId -> PlayerId -> Maybe Int ->  Widget
 tableClickHandlerWidget elemId tableId playerId seatId = do
   toWidget[julius|
       $(function() {
