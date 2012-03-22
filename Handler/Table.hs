@@ -65,7 +65,7 @@ tableCheckinWidget tableList playerId= do
      addScriptRemote "http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"
      $(widgetFile "tableCheckinWidget")
 
-addIdent :: Entity Table -> Handler (Text, TableId, Table)
+addIdent :: Entity Table -> Handler (String, TableId, Table)
 addIdent (Entity tableId table) = do
   identity <- lift $ newIdent
   return (T.pack identity, (entityKey table), (entityVal table))
