@@ -67,7 +67,7 @@ tableCheckinWidget tableList playerId= do
 
 addIdent :: Entity Table -> Handler (String, TableId, Table)
 addIdent (Entity tableId table) = do
-  identity <- lift $ newIdent
+  identity <- newIdent
   return (T.pack identity, (entityKey table), (entityVal table))
 
 tableClickHandlerWidget :: String -> TableId -> PlayerId -> Maybe Int ->  Widget
@@ -76,7 +76,7 @@ tableClickHandlerWidget elemId tableId playerId seatId = do
       $(function() {
         $('#{id}').click.post(
           '@{GamingSessionR}', 
-          { player: #{playerId}, table: #{tableId}, seat:#{seatId} },
+          { player: #{playerId}, table: #{entityKey tableId}, seat:#{seatId} },
           );
       });
       |]
