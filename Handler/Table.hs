@@ -68,7 +68,7 @@ tableCheckinWidget tableList playerId= do
 addIdent :: Entity Table -> Handler (String, TableId, Table)
 addIdent (Entity tableId table) = do
   identity <- newIdent
-  return (T.pack identity, (entityKey table), (entityVal table))
+  return (T.pack identity,  table, (entityVal table))
 
 tableClickHandlerWidget :: String -> TableId -> PlayerId -> Maybe Int ->  Widget
 tableClickHandlerWidget elemId tableId playerId seatId = do
