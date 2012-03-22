@@ -1,3 +1,4 @@
+{-# LANGUAGE TypeSynonymInstances #-}
 module Handler.Table
     ( getTablesR
     , postTablesR
@@ -65,7 +66,7 @@ tableCheckinWidget tableList = do
      toWidget [julius|
      $(function() {
          $("#h2").click(function(){ alert("You clicked on the heading!"); });
-         console.log(#{head tables})
+         console.log(#{tableTuple})
          });
          |]
      $(widgetFile "tableCheckinWidget")
@@ -76,4 +77,10 @@ addIdent a = do
   return (identity, a)
 
 
-instance ToJavascript Table where toJavascript = toJavascript .  tableName 
+instance ToJavascript Table 
+  where toJavascript table = toJavascript .  tableName $  toJSObject(
+instance ToJavascript (String, Table) 
+  where toJavascript theTuple = toJavascript .  toJSObject(theTuple)
+
+
+
