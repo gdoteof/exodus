@@ -79,8 +79,5 @@ addIdent a = do
 
 instance ToJavascript Table 
   where toJavascript table = toJavascript .  tableName $  toJSObject(
-instance ToJavascript (String, Table) 
-  where toJavascript theTuple = toJavascript .  toJSObject(theTuple)
-
 
 
