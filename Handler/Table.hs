@@ -14,6 +14,7 @@ import Data.Text.Lazy.Builder (Builder, fromText, toLazyText, fromLazyText)
 import qualified Data.Text.Lazy as TL
 import Text.Julius
 import qualified Data.Text as T hiding (null)
+import Data.Maybe
 
 tableForm :: Form Table
 tableForm = renderDivs $ Table
@@ -74,9 +75,9 @@ tableClickHandlerWidget :: String -> TableId -> PlayerId -> Maybe Int ->  Widget
 tableClickHandlerWidget elemId tid playerId seatId = do
   toWidget[julius|
       $(function() {
-        $('#{id}').click.post(
-          '@{GamingSessionR}', 
-          { player: #{playerId}, table: #{show tid}, seat:#{seatId} },
+        $('#{show elemId}').click.post(
+          '@{GamingSessionsR}', 
+          { player: #{show playerId}, table: #{show tid}, seat:#{show (fromJust seatId)} },
           );
       });
       |]

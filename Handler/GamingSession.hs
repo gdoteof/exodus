@@ -56,7 +56,7 @@ getGamingSessionsR = do
 
 getGamingSessionR :: GamingSessionId -> Handler RepHtml
 getGamingSessionR gamingSessionId = do 
-    session <- runDB (get404 gamingSessionId)
+     -- session <- runDB (get404 gamingSessionId)
     defaultLayout [whamlet|Get <h1>{#show session}|]
 
 postGamingSessionR :: GamingSessionId -> Handler RepHtml

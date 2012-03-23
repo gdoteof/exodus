@@ -5,7 +5,6 @@ module Handler.Helpers
     ) where
 
 import Prelude
-import Yesod
 import Data.Maybe (catMaybes)
 import qualified Data.Map as M
 
