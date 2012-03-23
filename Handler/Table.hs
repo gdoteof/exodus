@@ -61,7 +61,7 @@ getTableR tableId = do
 tableCheckinWidget :: PlayerId -> Widget
 tableCheckinWidget playerId= do
      tables <- lift $ runDB $ selectList [] []
-     let tableTuple =  map addIdent tables
+     tableTuple <-  mapM addIdent tables
      addScriptRemote "http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"
      return $ lift $(widgetFile "tableCheckinWidget")
 
