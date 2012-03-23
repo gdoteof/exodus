@@ -4,5 +4,5 @@ $if null tables
 $else
   <ul .checkin-widget>
   $forall (id, tableId, table) <- tableTuple
-      <li ##{id} .table>{tableName (entityVal table)} 
+      <li ##{T.unpack id} .table>{tableName (entityVal table)} 
       ^{tableClickHandlerWidget id (tableId table) playerId Nothing}
