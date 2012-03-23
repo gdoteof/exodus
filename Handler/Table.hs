@@ -61,13 +61,13 @@ getTableR tableId = do
 tableCheckinWidget :: PlayerId -> Widget
 tableCheckinWidget playerId= do
      tables <- lift $ runDB $ selectList [] []
-     tableTuple <- mapM addIdent tables
+     let tableTuple =  map addIdent tables
      addScriptRemote "http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"
      $(widgetFile "tableCheckinWidget")
 
 addIdent :: Entity Table -> (Text, TableId, Table)
 addIdent (Entity tableId table) = do
-  identity <- lift $ newIdent
+  identity <- newIdent
   return (identity,  tableId, table)
 
 tableClickHandlerWidget :: String -> TableId -> PlayerId -> Maybe Int ->  Widget
