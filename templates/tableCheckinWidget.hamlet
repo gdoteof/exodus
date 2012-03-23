@@ -1,5 +1,5 @@
 <div> there is a checkin widget
-$if null tables
+$if null tableTuple
   <div .empty-seats>No empty seats
 $else
   <ul .checkin-widget>

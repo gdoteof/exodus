@@ -61,9 +61,9 @@ getTableR tableId = do
 tableCheckinWidget :: PlayerId -> Widget
 tableCheckinWidget playerId= do
      tables <- lift $ runDB $ selectList [] []
-     tableTuple <-  mapM addIdent tables
+     tableTuple <-  lift $ mapM addIdent tables
      addScriptRemote "http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"
-     return $ lift $(widgetFile "tableCheckinWidget")
+     return $ lift  $(widgetFile "tableCheckinWidget")
 
 addIdent :: Entity Table -> Handler (Text, TableId, Table)
 addIdent (Entity tableId table) = do
@@ -76,7 +76,7 @@ tableClickHandlerWidget elemId tableId playerId seatId = do
       $(function() {
         $('#{id}').click.post(
           '@{GamingSessionR}', 
-          { player: #{playerId}, table: #{entityKey tableId}, seat:#{seatId} },
+          { player: #{playerId}, table: #{show tableId}, seat:#{seatId} },
           );
       });
       |]
