@@ -63,7 +63,7 @@ tableCheckinWidget playerId= do
      tables <- lift $ runDB $ selectList [] []
      let tableTuple =  map addIdent tables
      addScriptRemote "http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"
-     $(widgetFile "tableCheckinWidget")
+     return $ lift $(widgetFile "tableCheckinWidget")
 
 addIdent :: Entity Table -> (Text, TableId, Table)
 addIdent (Entity tableId table) = do
