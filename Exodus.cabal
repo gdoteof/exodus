@@ -95,7 +95,6 @@ executable         Exodus
                  , time
                  , old-locale
                  , containers
-                 , safe
                  , hamlet                        >= 0.10       && < 0.11
                  , shakespeare-css               >= 0.10       && < 0.11
                  , shakespeare-js                >= 0.11       && < 0.12

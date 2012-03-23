@@ -1,8 +1,7 @@
 {-# LANGUAGE TypeSynonymInstances, OverloadedStrings #-}
 module Handler.Table
     ( getTablesR
-    , postTablesR
-    , getTableR
+    , postTablesR , getTableR
     , tableCheckinWidget
     )
 where
@@ -15,6 +14,8 @@ import qualified Data.Text.Lazy as TL
 import Text.Julius
 import qualified Data.Text as T hiding (null)
 import Data.Maybe
+import Database.Persist.Store
+import qualified Data.Text as T
 
 tableForm :: Form Table
 tableForm = renderDivs $ Table
@@ -73,15 +74,24 @@ addIdent (Entity tableId table) = do
 
 tableClickHandlerWidget :: String -> TableId -> PlayerId -> Maybe Int ->  Widget
 tableClickHandlerWidget elemId tid playerId seatId = do
+  let seatNumber = if seatId == Nothing 
+                    then "null" 
+                    else show  $ fromJust seatId
+  let pid = fromPersistToJS $ unKey playerId
   toWidget[julius|
       $(function() {
         $('#{show elemId}').click.post(
           '@{GamingSessionsR}', 
-          { player: #{show playerId}, table: #{show tid}, seat:#{show (fromJust seatId)} },
+          { player: '#{pid}', table: '#{show tid}', seat:'#{seatNumber}' },
           );
       });
       |]
+  toWidget[hamlet|something<br/>|]
 
 
-
-
+fromPersistToJS :: PersistValue -> String
+fromPersistToJS p = do
+ let (a) = fromPersistValue p
+ case a of 
+    Left  l -> T.unpack l
+    Right  r -> r 

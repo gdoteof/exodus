@@ -26,6 +26,7 @@ import Handler.Root
 import Handler.Player
 import Handler.Table
 import Handler.GamingSession
+import Helpers.Model
 
 
 -- This line actually creates our YesodSite instance. It is the second half
