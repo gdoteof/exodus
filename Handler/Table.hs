@@ -65,7 +65,7 @@ tableCheckinWidget playerId= do
      addScriptRemote "http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"
      return $ lift $(widgetFile "tableCheckinWidget")
 
-addIdent :: Entity Table -> (Text, TableId, Table)
+addIdent :: Entity Table -> Handler (Text, TableId, Table)
 addIdent (Entity tableId table) = do
   identity <- newIdent
   return (identity,  tableId, table)
@@ -82,8 +82,5 @@ tableClickHandlerWidget elemId tableId playerId seatId = do
       |]
 
 
-
-instance ToJavascript Table 
-  where toJavascript table = toJavascript .  tableName table
 
 
