@@ -63,7 +63,7 @@ tableCheckinWidget playerId= do
      tables <- lift $ runDB $ selectList [] []
      tableTuple <-  lift $ mapM addIdent tables
      addScriptRemote "http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"
-     return $ lift  $(widgetFile "tableCheckinWidget")
+     return $(widgetFile "tableCheckinWidget")
 
 addIdent :: Entity Table -> Handler (Text, TableId, Table)
 addIdent (Entity tableId table) = do
@@ -71,12 +71,12 @@ addIdent (Entity tableId table) = do
   return (identity,  tableId, table)
 
 tableClickHandlerWidget :: String -> TableId -> PlayerId -> Maybe Int ->  Widget
-tableClickHandlerWidget elemId tableId playerId seatId = do
+tableClickHandlerWidget elemId tid playerId seatId = do
   toWidget[julius|
       $(function() {
         $('#{id}').click.post(
           '@{GamingSessionR}', 
-          { player: #{playerId}, table: #{show tableId}, seat:#{seatId} },
+          { player: #{playerId}, table: #{show tid}, seat:#{seatId} },
           );
       });
       |]
