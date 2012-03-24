@@ -1,8 +1,8 @@
-<tr>
+<tr ##{containerId}>
   <td>
     #{playerName p}
 
   <td>#{tableName t}
 
-  <td><form action=@{GamingSessionCloseR sid} method=post>
-        <input type=submit value="close session"> 
+  <td> #{session}
+      <input ##{buttonId} type=submit value="close session"> 

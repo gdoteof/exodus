@@ -42,7 +42,7 @@ getGamingSessionsR = do
     sessions <- selectList [GamingSessionEnd ==. Nothing] [Desc GamingSessionTable]
     let pids = map (gamingSessionPlayer . entityVal) sessions
     players <- selectList [PlayerId <-. pids] []
-  -}
+  --}
   records <- runDB $ do
       sessions <- selectList [GamingSessionEnd ==. Nothing] []
       players  <- selectList [] []
@@ -75,4 +75,14 @@ postGamingSessionCloseR sid= do
 
 gamingSessionWidget :: GamingSessionId -> Player -> Table -> Widget
 gamingSessionWidget sid p t = do
+    let session = toPathPiece sid
+    buttonId <- lift $ newIdent
+    containerId <- lift $ newIdent
+    addScriptRemote "http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"
+    toWidget[julius|
+      $('##{buttonId}').click(function(){
+        $('##{containerId}').remove() 
+      });
+
+    |]
     $(widgetFile "gamingSession/_session_row")
