@@ -24,7 +24,7 @@ Table
     pointsHour Int
     seats Int Maybe
     description Text Maybe
-    deriving Show
+    deriving Show Eq
 
 GamingSession
     start UTCTime

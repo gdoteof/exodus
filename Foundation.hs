@@ -124,7 +124,11 @@ instance Yesod PokerRoom where
     -- and names them based on a hash of their content. This allows
     -- expiration dates to be set far in the future without worry of
     -- users receiving stale content.
+#ifdef DEVELOPMENT
+    addStaticContent = addStaticContentExternal Right base64md5 Settings.staticDir (StaticR . flip StaticRoute [])
+#else
     addStaticContent = addStaticContentExternal minifym base64md5 Settings.staticDir (StaticR . flip StaticRoute [])
+#endif
 
     -- Enable Javascript async loading
     yepnopeJs _ = Just $ Right $ StaticR js_modernizr_js

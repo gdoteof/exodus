@@ -73,25 +73,24 @@ addIdent (Entity tableId table) = do
   return (identity,  tableId, table)
 
 tableClickHandlerWidget :: String -> TableId -> PlayerId -> Maybe Int ->  Widget
-tableClickHandlerWidget elemId tid playerId seatId = do
+tableClickHandlerWidget elemId tableId playerId seatId = do
   let seatNumber = if seatId == Nothing 
                     then "null" 
                     else show  $ fromJust seatId
-  let pid = fromPersistToJS $ unKey playerId
+  let pid = toPathPiece $ playerId
+  let tid = toPathPiece $ tableId
   toWidget[julius|
-      $(function() {
-        $('#{show elemId}').click.post(
-          '@{GamingSessionsR}', 
-          { player: '#{pid}', table: '#{show tid}', seat:'#{seatNumber}' },
-          );
-      });
+        $('##{elemId}').click(function(){
+             console.log('#{elemId}' + ' clicked');
+            $.ajax({
+              type: 'POST',
+              url:'@{GamingSessionsR}', 
+              data: { player: #{show pid}, table: #{show tid} },
+              success: function(data){ alert('success'); console.log(data);},
+              error: function(jqxhr,textStatus,errorThrown){ alert(textStatus + ': ' + errorThrown); },
+           } );
+            
+        });
       |]
   toWidget[hamlet|something<br/>|]
 
-
-fromPersistToJS :: PersistValue -> String
-fromPersistToJS p = do
- let (a) = fromPersistValue p
- case a of 
-    Left  l -> T.unpack l
-    Right  r -> r 

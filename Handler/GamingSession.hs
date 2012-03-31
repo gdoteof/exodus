@@ -16,6 +16,8 @@ import Data.Text hiding (null, map)
 import Data.Maybe
 import System.Locale (defaultTimeLocale)
 import Helpers.Model
+import qualified Data.Map as Map
+import Data.List as List hiding (insert)
 
 postGamingSessionsR :: Handler RepHtml
 postGamingSessionsR = do
@@ -50,9 +52,21 @@ getGamingSessionsR = do
 
       return $ joinTables3 gamingSessionPlayer gamingSessionTable sessions players tables
 
+  let takenSeats = tableMeta records
   defaultLayout $(widgetFile ("opensessions"))
 
-  
+-- Generates a list of (Entty Table, [Int]) which represent the 'taken' seats for the 
+tableMeta :: [(Entity GamingSession, Entity Player, Entity Table)] -> [(Entity Table, [Int])]
+tableMeta [] = []
+tableMeta xs = Import.foldl addUpdate [] xs
+
+addUpdate :: [(Entity Table, [Int])] -> (Entity GamingSession, Entity Player, Entity Table) -> [(Entity Table, [Int])] 
+addUpdate acc (g,p,table) = map update acc
+   where 
+     update ts@(t,s) | t==table = (t, List.sort(s++seat)) | otherwise = ts
+     seat = (case (gamingSessionSeat (entityVal g)) of
+                    Nothing -> []
+                    _ -> [fromJust $ gamingSessionSeat $ entityVal g])
 
 getGamingSessionR :: GamingSessionId -> Handler RepHtml
 getGamingSessionR gamingSessionId = do 
@@ -81,8 +95,18 @@ gamingSessionWidget sid p t = do
     addScriptRemote "http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"
     toWidget[julius|
       $('##{buttonId}').click(function(){
-        $('##{containerId}').remove() 
+         $.ajax({
+            type: 'POST',
+            url:'@{GamingSessionCloseR sid}', 
+            success: function(data){ $('##{containerId}').remove();  },
+            error: function(jqxhr,textStatus,errorThrown){ alert(textStatus + ': ' + errorThrown); },
+            dataType: "html"
+         } );
+        
       });
 
     |]
     $(widgetFile "gamingSession/_session_row")
+
+
+
