@@ -16,13 +16,14 @@ import qualified Data.Text as T hiding (null)
 import Data.Maybe
 import Database.Persist.Store
 import qualified Data.Text as T
+import Debug.Trace
 
 tableForm :: Form Table
 tableForm = renderDivs $ Table
     <$> areq   textField     "Name"             Nothing
-    <*> areq   textField     "Game"             Nothing
-    <*> areq   intField      "Points per hour"  Nothing
-    <*> aopt   intField      "Number of Seats"  Nothing
+    <*> areq   textField     "Game"             (Just "NL Holdem $1/$2")
+    <*> areq   intField      "Points per hour"  (Just 1)
+    <*> areq   intField      "Number of Seats"  (Just 9)
     <*> aopt   textField     "Description"      Nothing
 
 
@@ -77,20 +78,19 @@ tableClickHandlerWidget elemId tableId playerId seatId = do
   let seatNumber = if seatId == Nothing 
                     then "null" 
                     else show  $ fromJust seatId
+  liftIO $ print seatNumber
   let pid = toPathPiece $ playerId
   let tid = toPathPiece $ tableId
   toWidget[julius|
         $('##{elemId}').click(function(){
-             console.log('#{elemId}' + ' clicked');
             $.ajax({
               type: 'POST',
               url:'@{GamingSessionsR}', 
-              data: { player: #{show pid}, table: #{show tid} },
+              data: { player: #{show pid}, table: #{show tid}, seat: #{seatNumber} },
               success: function(data){ alert('success'); console.log(data);},
               error: function(jqxhr,textStatus,errorThrown){ alert(textStatus + ': ' + errorThrown); },
            } );
             
         });
       |]
-  toWidget[hamlet|something<br/>|]
 

@@ -17,21 +17,6 @@ findOrCreate :: ( YesodPersistBackend m ~ PersistEntityBackend v
              => v -> GHandler s m (Key (PersistEntityBackend v) v)
 findOrCreate v = return . either entityKey id =<< runDB (insertBy v)
 
--- |
---
--- My solution to the N+1 problem:
---
--- > runDB $ do
--- >     posts <- selectList [] []
--- >     users <- selectList [] []
--- >
--- >     let records = joinTables postUser posts users
--- >
--- >     forM records $ \(post,user) -> do
--- >         --
--- >         -- ...
--- >         --
---
 joinTables :: (a -> Key (PersistEntityBackend b) b)
            -> [Entity a]
            -> [Entity b]

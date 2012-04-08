@@ -21,7 +21,7 @@ playerForm = renderDivs $ Player
     <*> aopt   textField "Email" Nothing
     <*> aopt   textField "Phone" Nothing
     <*> aopt   textareaField "Notes" Nothing
-    <*> aopt   intField "Minutes to Start" Nothing
+    <*> areq   intField "Minutes to Start" (Just 0)
     <*> pure   False
 
 getPlayerListR :: Handler RepHtml
@@ -49,9 +49,7 @@ postPlayerListR = do
 getPlayerR :: PlayerId -> Handler RepHtml
 getPlayerR playerId = do
      player <- runDB (get404 playerId)
-     let minutes = if playerMinutes player == Nothing
-                   then 0
-                   else fromJust $ playerMinutes player
+     let minutes =  playerMinutes player
      defaultLayout $ do 
                    setTitle "Testing" 
                    $(widgetFile "player")

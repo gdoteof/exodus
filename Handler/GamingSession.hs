@@ -18,6 +18,7 @@ import System.Locale (defaultTimeLocale)
 import Helpers.Model
 import qualified Data.Map as Map
 import Data.List as List hiding (insert)
+import Debug.Trace
 
 postGamingSessionsR :: Handler RepHtml
 postGamingSessionsR = do
@@ -28,23 +29,16 @@ postGamingSessionsR = do
                 <$> (textToKey <$> (ireq textField "player"))
                 <*> (textToKey <$> (ireq textField "table"))
                 <*> iopt intField "seat"
-    let _ = gs :: GamingSession
     gsId <- runDB $ insert gs
-    let startTime = formatTime defaultTimeLocale "%H:%M:%S (%b/%e/%y" (gamingSessionStart gs)
+    let startTime = formatTime defaultTimeLocale "%H:%M:%S (%b/%e/%y)" (gamingSessionStart gs)
     player <- runDB (get404 (gamingSessionPlayer gs))
     table <- runDB (get404 (gamingSessionTable gs))
     defaultLayout $(widgetFile "newSession")
   
---textToKey = Key . PersistText . read . unpack
 textToKey a = fromJust . fromPathPiece $ a
 
 getGamingSessionsR :: Handler RepHtml
 getGamingSessionsR = do
-  {-records <- runDB $ do
-    sessions <- selectList [GamingSessionEnd ==. Nothing] [Desc GamingSessionTable]
-    let pids = map (gamingSessionPlayer . entityVal) sessions
-    players <- selectList [PlayerId <-. pids] []
-  --}
   records <- runDB $ do
       sessions <- selectList [GamingSessionEnd ==. Nothing] []
       players  <- selectList [] []
@@ -60,17 +54,25 @@ tableMeta :: [(Entity GamingSession, Entity Player, Entity Table)] -> [(Entity T
 tableMeta [] = []
 tableMeta xs = Import.foldl addUpdate [] xs
 
+tableMetaWidget :: [(Entity Table, [Int])] -> Widget
+tableMetaWidget truple = do
+     $(widgetFile "tableMetaWidget") 
+
 addUpdate :: [(Entity Table, [Int])] -> (Entity GamingSession, Entity Player, Entity Table) -> [(Entity Table, [Int])] 
-addUpdate acc (g,p,table) = map update acc
+addUpdate acc (g,p,table) 
+   --If this is the first entry for a table add it to acc
+   | List.filter (\(t,is) -> entityKey t == entityKey table) acc == []    = [(table, seat)] ++ acc
+   --update the table in acc
+   | otherwise = map update acc
    where 
      update ts@(t,s) | t==table = (t, List.sort(s++seat)) | otherwise = ts
-     seat = (case (gamingSessionSeat (entityVal g)) of
+     seat = case gamingSessionSeat (entityVal g) of
                     Nothing -> []
-                    _ -> [fromJust $ gamingSessionSeat $ entityVal g])
+                    _ -> [fromJust $ gamingSessionSeat $ entityVal g]
 
 getGamingSessionR :: GamingSessionId -> Handler RepHtml
 getGamingSessionR gamingSessionId = do 
-     -- session <- runDB (get404 gamingSessionId)
+    session <- runDB (get404 gamingSessionId)
     defaultLayout [whamlet|Get <h1>{#show session}|]
 
 postGamingSessionR :: GamingSessionId -> Handler RepHtml
@@ -84,7 +86,7 @@ postGamingSessionCloseR sid= do
     person <- runDB (get404 $ gamingSessionPlayer session)
     end <- liftIO $ getCurrentTime
     runDB $ update  sid [GamingSessionEnd =. Just end]
-    runDB $ update (gamingSessionPlayer session) [PlayerMinutes +=. Just (fromIntegral ( round (diffUTCTime end (gamingSessionStart session) )))]
+    runDB $ update (gamingSessionPlayer session) [PlayerMinutes +=. fromIntegral ( round ( (diffUTCTime end (gamingSessionStart session)) / 60))]
     defaultLayout [whamlet|Session closed!|]
 
 gamingSessionWidget :: GamingSessionId -> Player -> Table -> Widget

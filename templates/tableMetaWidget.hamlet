@@ -1,0 +1,2 @@
+$forall (table, seats) <- truple
+      <pre>#{show seats}

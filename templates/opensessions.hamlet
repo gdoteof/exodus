@@ -9,16 +9,12 @@
         <input type=submit value="make">
 <div .content>
   <div .page-header>
-    <h1>All reviews
+    <h1>Who is where?
 
   $if null records
     <div .no-results>
-      <h3>Oops!
-      <p>
-        We don't seem to have any reviews in the system. Something must 
-        be broken.
-
-      <p>Please check back later.
+      <h3>Hmm..
+      <p> looks like no one is signed in :-/
 
   $else
     <table .bordered-table .condensed-table .zebra-striped>
@@ -30,3 +26,5 @@
 
         $forall (s,p,t) <- records
           ^{gamingSessionWidget (entityKey s) (entityVal p) (entityVal t)}
+          
+    ^{tableMetaWidget takenSeats}

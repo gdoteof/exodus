@@ -1,3 +1,3 @@
 rm /data/db/mongod.lock
-mongod &
+mongod --rest &
 yesod --dev devel 

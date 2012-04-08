@@ -14,7 +14,7 @@ Player
     email Text Maybe
     phone Text Maybe
     note Textarea Maybe
-    minutes Int Maybe
+    minutes Int 
     inSession Bool
     deriving Show
 
@@ -22,7 +22,7 @@ Table
     name Text
     game Text 
     pointsHour Int
-    seats Int Maybe
+    seats Int 
     description Text Maybe
     deriving Show Eq
 
